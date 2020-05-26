@@ -1,26 +1,28 @@
-# tarot.tcl
+# tarots.tcl v0.1.2
 # by Nikopol
 # created 20070821
-# version 20200430
+# version 20200526
 # ----------------
 # Eggdrop script to draw some tarots cards.
 #
 # Usage:
-# !tarot [number [<question asked>]]    (Max number of cards: 12)
+# !tarots [number [<question asked>]]    (Max number of cards: 12)
 #
 
-namespace eval Tarots {
+namespace eval ::Tarots {
 # CONFIGURATION:
 
 # Channels we allow public use in (space seperated list)
-variable allowed_chans "#astrology ##astrology #astrobot"
+variable allowed_chans {#astrology ##astrology #astrobot}
 
 # Seconds between calls
 variable throttle 30
 
 # Binds
-bind pub - >tarots Tarots::drawCards
-bind pub - !tarots Tarots::drawCards
+bind pub - >tarot  ::Tarots::drawCards
+bind pub - !tarot  ::Tarots::drawCards
+bind pub - >tarots ::Tarots::drawCards
+bind pub - !tarots ::Tarots::drawCards
 
 # END CONFIG
 
@@ -36,19 +38,19 @@ proc drawCards {nick uhost hand chann txt} {
 
     # Check time
     set now [clock seconds]
-    set lmt [expr {$lastCall + $throttle}]
-    if {$now <= $lmt} { return } else { set lastCall $now }
+    if {$now <= [expr {$lastCall + $throttle}]} {
+        return
+    }
+    set lastCall $now
 
     # Check number of cards
     set words [split [string trim $txt]]
-    set numcards [list \
-        "1" "2" "3" "4" "5" "6" "7" "8" "9" "10" "11" "12" \
-    ]
+    set numcards [list 1 2 3 4 5 6 7 8 9 10 11 12]
 
     if {[llength $words] == 0} {
         set num 1
     } elseif {[lsearch $numcards [lindex $words 0]] != -1} {
-        set num [expr int([lindex $words 0])]
+        set num [expr {int([lindex $words 0])}]
     } else {
         # ignoring question :)
         set num 1
@@ -85,16 +87,21 @@ proc drawCards {nick uhost hand chann txt} {
     expr srand([clock seconds])
 
     for {set x 0} {$x < $num} {incr x} {
-        set ind [expr int(rand()*([llength $cards] - 1))]
-        append msg [lindex $cards $ind]
-        if {($x+1) != $num} { append msg ", " } else { break }
+        set ind [expr {int(rand()*([llength $cards] - 1))}]
+        if {[expr {int(rand()*2)}]} {
+            append msg [lindex $cards $ind]
+        } else {
+            # inversed
+            append msg [string reverse [lindex $cards $ind]]
+        }
+        if {($x+1) != $num} { append msg {, } } else { break }
         set cards [lreplace $cards $ind $ind]
     }
 
     puthelp $msg
 }
 
-putlog "Loaded Tarot script by Nikopol."
+putlog {Loaded Tarots script by Nikopol.}
 }
 
 # vi: sw=4 ts=4 et
