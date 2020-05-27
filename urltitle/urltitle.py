@@ -4,6 +4,7 @@
 import os.path
 import sys
 import tempfile
+import subprocess
 
 url = sys.argv[-1]
 if not url.startswith('http'):
@@ -17,6 +18,14 @@ if not os.path.exists(fpath):
     sys.exit(1)
 os.system('wget --timeout=3 -qO %s %s' % (fpath, url))
 
+# check file
+sub = subprocess.run(['file', fpath], stdout=subprocess.PIPE)
+info = str(sub.stdout)
+if info.find('%s: HTML ' % fpath) == -1:
+    os.remove(fpath)
+    print('error: invalid url', end='')
+    sys.exit(1)
+
 # analyze file
 f = open(fpath, 'rb')
 data = f.read()
@@ -29,9 +38,9 @@ from lxml import html
 encoding = UnicodeDammit(data, is_html=True).original_encoding
 parser = html.HTMLParser(encoding=encoding)
 root = html.document_fromstring(data, parser=parser)
-title = root.find('.//title').text_content()
+title = root.find('.//title').text_content().strip()
 
 if title:
-    print(title, end='')
+    print(title, end='', flush=True)
 
 # vi: sw=4 ts=4 et
