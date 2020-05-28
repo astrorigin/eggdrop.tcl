@@ -66,8 +66,8 @@ proc handler {nick uhost hand chann txt} {
     }
     # loop over words
     foreach word [split $txt] {
-        # check length (http:// = 7)
-        if {[string length $word] < 7} {
+        # check length (http:// = 7, plus at least 4)
+        if {[string length $word] < 11} {
             continue
         }
         # check http(s)
