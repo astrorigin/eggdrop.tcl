@@ -12,11 +12,17 @@ if not url.startswith('http'):
     sys.exit(1)
 
 # download file using wget
-fd, fpath = tempfile.mkstemp()
+fd, fpath = tempfile.mkstemp(suffix='.urltitle')
 if not os.path.exists(fpath):
     print('error: cant create temp file', end='')
     sys.exit(1)
-os.system('wget --timeout=3 -qO %s %s' % (fpath, url))
+wget = ['wget', '--timeout=3', '--tries=1', '-qO', fpath, url]
+try:
+    sub = subprocess.run(wget, check=True)
+except subprocess.CalledProcessError:
+    os.remove(fpath)
+    print('error: cant retrieve url', end='')
+    sys.exit(0)
 
 # check file
 sub = subprocess.run(['file', fpath], stdout=subprocess.PIPE)
