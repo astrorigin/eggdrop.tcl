@@ -1,10 +1,10 @@
-# urltitle.tcl v0.1.0
+# urltitle.tcl v0.1.1
 # by Nikopol
 # inspired from teel
 # created 20200526
 #
-# no more channel flags, all the config stands here in script
-# use wget and python, less memory, more flexible, same job, just better.
+# no channel flags, all the config stands here in script
+# use wget and python, so less memory, more flexible, same job.
 #
 # requires packages: wget python3-bs4 python3-lxml
 #
@@ -14,7 +14,7 @@ namespace eval ::UrlTitle {
 ### CONFIGURATION
 
 # list of channels to survey
-variable chans {#lamers #xyz}
+variable chans {#astrology ##astrology #astrobot}
 
 # user flags script will ignore input from
 variable ignore {bdkqr|dkqr}
@@ -22,16 +22,29 @@ variable ignore {bdkqr|dkqr}
 # minimum seconds to wait before another eggdrop use
 variable delay 1
 
-# url patterns to ignore
+# url patterns to ignore (websites, file extensions..)
 variable urlignore [list \
     #{://www\.youtube\.com} \
     #{://youtu\.be} \
+    {\.7z$} \
+    {\.bmp$} \
+    {\.deb$} \
+    {\.exe$} \
+    {\.gif$} \
+    {\.gz$} \
+    {\.jpeg$} \
+    {\.jpg$} \
+    {\.pdf$} \
+    {\.png$} \
+    {\.rpm$} \
+    {\.xz$} \
+    {\.zip$} \
 ]
 
 # path to python script
 variable py /local/opt/eggdrop/myscripts/urltitle.py
 
-# log urls printed to channels (1=yes, 0=no)
+# log stuff (1=yes, 0=no)
 variable log 1
 
 ### END CONFIG
@@ -40,11 +53,20 @@ variable last 0
 
 proc getTitle { url } {
     variable py
-    set title [exec $py $url 2>@1]
-    return $title
+    variable log
+    if {$log} {
+        putlog "urltitle.tcl: trying $url"
+    }
+    if {[catch {exec $py $url 2>@1} output] != 0} {
+        if {$log} {
+            putlog "urltitle.tcl: $output"
+        }
+        return {}
+    }
+    return $output
 }
 
-proc handler {nick uhost hand chann txt} {
+proc handler { nick uhost hand chann txt } {
     variable chans
     variable delay
     variable last
@@ -80,7 +102,7 @@ proc handler {nick uhost hand chann txt} {
         }
         # url grab starts
         set last $now
-        set title [getTitle $word]
+        set title [string trim [getTitle $word]]
         if {[string length $title]} {
             puthelp "PRIVMSG $chann :\037Title:\037 $title"
             if {$log} {
@@ -93,8 +115,12 @@ proc handler {nick uhost hand chann txt} {
 
 proc urlIsIgnored { word } {
     variable urlignore
+    variable log
     foreach url $urlignore {
-        if {[regexp $url $word]} {
+        if {[regexp -nocase -lineanchor -- $url $word]} {
+            if {$log} {
+                putlog "urltitle.tcl: ignoring $word ($url)"
+            }
             return 1
         }
     }
@@ -102,7 +128,7 @@ proc urlIsIgnored { word } {
 }
 
 # some initialization
-set chans [string tolower $chans]
+set chans [string tolower [string trim $chans]]
 # unbind everything
 foreach b [binds pubm] {
     if {[lindex $b 4] == {::UrlTitle::handler}} {
@@ -114,7 +140,7 @@ foreach chann $chans {
     bind pubm -|- "$chann *://*" ::UrlTitle::handler
 }
 
-putlog {Loaded UrlTitle v0.1.0 by Nikopol.}
+putlog {Loaded UrlTitle v0.1.1 by Nikopol.}
 
 } ;# end namespace
 

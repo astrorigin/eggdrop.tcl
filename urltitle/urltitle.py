@@ -8,28 +8,28 @@ import subprocess
 
 url = sys.argv[-1]
 if not url.startswith('http'):
-    print('error: invalid url', end='')
+    print('error: invalid url')
     sys.exit(1)
 
 # download file using wget
 fd, fpath = tempfile.mkstemp(suffix='.urltitle')
 if not os.path.exists(fpath):
-    print('error: cant create temp file', end='')
+    print('error: cant create temp file')
     sys.exit(1)
 wget = ['wget', '--timeout=3', '--tries=1', '-qO', fpath, url]
 try:
     sub = subprocess.run(wget, check=True)
 except subprocess.CalledProcessError:
     os.remove(fpath)
-    print('error: cant retrieve url', end='')
-    sys.exit(0)
+    print('error: cant retrieve url')
+    sys.exit(1)
 
 # check file
 sub = subprocess.run(['file', fpath], stdout=subprocess.PIPE)
 info = str(sub.stdout)
 if info.find('%s: HTML ' % fpath) == -1:
     os.remove(fpath)
-    print('error: invalid url', end='')
+    print('error: invalid url')
     sys.exit(1)
 
 # analyze file
@@ -47,6 +47,6 @@ root = html.document_fromstring(data, parser=parser)
 title = root.find('.//title').text_content().strip()
 
 if title:
-    print(title, end='', flush=True)
+    print(title, flush=True)
 
 # vi: sw=4 ts=4 et
