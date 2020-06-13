@@ -44,7 +44,11 @@ from lxml import html
 encoding = UnicodeDammit(data, is_html=True).original_encoding
 parser = html.HTMLParser(encoding=encoding)
 root = html.document_fromstring(data, parser=parser)
-title = root.find('.//title').text_content().strip()
+
+try:
+    title = root.xpath(".//meta[@name='title']/@content")[0].strip()
+except:
+    title = root.find('.//title').text_content().strip()
 
 if title:
     print(title, flush=True)

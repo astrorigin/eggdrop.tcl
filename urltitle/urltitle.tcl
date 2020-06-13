@@ -1,4 +1,4 @@
-# urltitle.tcl v0.1.1
+# urltitle.tcl v0.1.2
 # by Nikopol
 # inspired from teel
 # created 20200526
@@ -6,7 +6,7 @@
 # no channel flags, all the config stands here in script
 # use wget and python, so less memory, more flexible, same job.
 #
-# requires packages: wget python3-bs4 python3-lxml
+# requires packages: wget file python3-bs4 python3-lxml
 #
 
 namespace eval ::UrlTitle {
@@ -140,7 +140,7 @@ foreach chann $chans {
     bind pubm -|- "$chann *://*" ::UrlTitle::handler
 }
 
-putlog {Loaded UrlTitle v0.1.1 by Nikopol.}
+putlog {Loaded UrlTitle v0.1.2 by Nikopol.}
 
 } ;# end namespace
 
