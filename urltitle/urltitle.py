@@ -24,15 +24,19 @@ except subprocess.CalledProcessError:
     print('error: cant retrieve url')
     sys.exit(1)
 
-# check file
+# check file type
 sub = subprocess.run(['file', fpath], stdout=subprocess.PIPE)
 info = str(sub.stdout)
 if info.find('%s: HTML ' % fpath) == -1:
+    # not html
+    info = sub.stdout.strip().split(b': ')[1]
+    sub = subprocess.run(['du', '-h', fpath], stdout=subprocess.PIPE)
     os.remove(fpath)
-    print('error: invalid url')
-    sys.exit(1)
+    info += b', %s' % sub.stdout.split(b'\t')[0]
+    print('\x1FFile info:\x1F %s' % info.decode('utf-8'), flush=True)
+    sys.exit(0)
 
-# analyze file
+# analyze html file
 f = open(fpath, 'rb')
 data = f.read()
 f.close()
@@ -51,6 +55,6 @@ except:
     title = root.find('.//title').text_content().strip()
 
 if title:
-    print(title, flush=True)
+    print('\x1FTitle:\x1F %s' % title, flush=True)
 
 # vi: sw=4 ts=4 et

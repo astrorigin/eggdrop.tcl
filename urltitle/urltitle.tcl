@@ -1,4 +1,4 @@
-# urltitle.tcl v0.1.2
+# urltitle.tcl v0.2.0
 # by Nikopol
 # inspired from teel
 # created 20200526
@@ -6,7 +6,7 @@
 # no channel flags, all the config stands here in script
 # use wget and python, so less memory, more flexible, same job.
 #
-# requires packages: wget file python3-bs4 python3-lxml
+# requires packages: wget python3-bs4 python3-lxml
 #
 
 namespace eval ::UrlTitle {
@@ -14,7 +14,7 @@ namespace eval ::UrlTitle {
 ### CONFIGURATION
 
 # list of channels to survey
-variable chans {#astrology ##astrology #astrobot}
+variable chans {#astrology ##astrology #astrobot #shell.blue}
 
 # user flags script will ignore input from
 variable ignore {bdkqr|dkqr}
@@ -26,23 +26,23 @@ variable delay 1
 variable urlignore [list \
     #{://www\.youtube\.com} \
     #{://youtu\.be} \
-    {\.7z$} \
-    {\.bmp$} \
-    {\.deb$} \
-    {\.exe$} \
-    {\.gif$} \
-    {\.gz$} \
-    {\.jpeg$} \
-    {\.jpg$} \
-    {\.pdf$} \
-    {\.png$} \
-    {\.rpm$} \
-    {\.xz$} \
-    {\.zip$} \
+    #{\.7z$} \
+    #{\.bmp$} \
+    #{\.deb$} \
+    #{\.exe$} \
+    #{\.gif$} \
+    #{\.gz$} \
+    #{\.jpeg$} \
+    #{\.jpg$} \
+    #{\.pdf$} \
+    #{\.png$} \
+    #{\.rpm$} \
+    #{\.xz$} \
+    #{\.zip$} \
 ]
 
 # path to python script
-variable py /local/opt/eggdrop/myscripts/urltitle.py
+variable py /home/eggdrop/eggdrop/myscripts/urltitle.py
 
 # log stuff (1=yes, 0=no)
 variable log 1
@@ -104,7 +104,7 @@ proc handler { nick uhost hand chann txt } {
         set last $now
         set title [string trim [getTitle $word]]
         if {[string length $title]} {
-            puthelp "PRIVMSG $chann :\037Title:\037 $title"
+            puthelp "PRIVMSG $chann :$title"
             if {$log} {
                 putlog "urltitle.tcl: $nick $uhost $hand $chann $word"
             }
@@ -140,7 +140,7 @@ foreach chann $chans {
     bind pubm -|- "$chann *://*" ::UrlTitle::handler
 }
 
-putlog {Loaded UrlTitle v0.1.2 by Nikopol.}
+putlog {Loaded UrlTitle v0.2.0 by Nikopol.}
 
 } ;# end namespace
 
