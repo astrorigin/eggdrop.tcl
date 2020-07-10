@@ -27,6 +27,18 @@ except subprocess.CalledProcessError:
 # check file type
 sub = subprocess.run(['file', fpath], stdout=subprocess.PIPE)
 info = str(sub.stdout)
+if info.find('%s: gzip compressed data' % fpath) != -1:
+    # gzipped html?
+    fd, fpath2 = tempfile.mkstemp(suffix='.urltitle')
+    os.system('gzip -d -S .urltitle -c %s > %s' (fpath, fpath2))
+    sub = subprocess.run(['file', fpath2], stdout=subprocess.PIPE)
+    info2 = str(sub.stdout)
+    if info2.find('%s: HTML ' % fpath2) != -1:
+        os.remove(fpath)
+        fpath = fpath2
+        info = info2
+    else:
+        os.remove(fpath2)
 if info.find('%s: HTML ' % fpath) == -1:
     # not html
     info = sub.stdout.strip().split(b': ')[1]
