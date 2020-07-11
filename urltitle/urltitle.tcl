@@ -1,4 +1,4 @@
-# urltitle.tcl v0.2.1
+# urltitle.tcl v0.2.2
 # by Nikopol
 # inspired from teel
 # created 20200526
@@ -140,7 +140,7 @@ foreach chann $chans {
     bind pubm -|- "$chann *://*" ::UrlTitle::handler
 }
 
-putlog {Loaded UrlTitle v0.2.1 by Nikopol.}
+putlog {Loaded UrlTitle v0.2.2 by Nikopol.}
 
 } ;# end namespace
 
