@@ -28,19 +28,21 @@ except subprocess.CalledProcessError:
 sub = subprocess.run(['file', fpath], stdout=subprocess.PIPE)
 info = str(sub.stdout)
 if info.find('%s: gzip compressed data' % fpath) != -1:
-    # gzipped html?
+    # gzipped html/xml?
     fd, fpath2 = tempfile.mkstemp(suffix='.urltitle')
     os.system('gzip -d -S .urltitle -c %s > %s' (fpath, fpath2))
     sub2 = subprocess.run(['file', fpath2], stdout=subprocess.PIPE)
     info2 = str(sub2.stdout)
-    if info2.find('%s: HTML ' % fpath2) != -1:
+    if info2.find('%s: HTML ' % fpath2) != -1 \
+            or info2.find('%s: XML ' % fpath2) != -1:
         os.remove(fpath)
         fpath = fpath2
         info = info2
     else:
         os.remove(fpath2)
-if info.find('%s: HTML ' % fpath) == -1:
-    # not html
+if info.find('%s: HTML ' % fpath) == -1 \
+        and info.find('%s: XML ' % fpath) == -1:
+    # not html/xml
     info = sub.stdout.strip().split(b': ')[1]
     sub = subprocess.run(['du', '-h', fpath], stdout=subprocess.PIPE)
     os.remove(fpath)
