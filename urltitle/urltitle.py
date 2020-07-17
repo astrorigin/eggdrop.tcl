@@ -30,7 +30,7 @@ info = str(sub.stdout)
 if info.find('%s: gzip compressed data' % fpath) != -1:
     # gzipped html/xml?
     fd, fpath2 = tempfile.mkstemp(suffix='.urltitle')
-    os.system('gzip -d -S .urltitle -c %s > %s' (fpath, fpath2))
+    os.system('gzip -d -S .urltitle -c %s > %s' % (fpath, fpath2))
     sub2 = subprocess.run(['file', fpath2], stdout=subprocess.PIPE)
     info2 = str(sub2.stdout)
     if info2.find('%s: HTML ' % fpath2) != -1 \
