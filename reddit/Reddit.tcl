@@ -1,4 +1,4 @@
-# Reddit.tcl v0.1.0
+# Reddit.tcl v0.1.1
 # by Nikopol
 # created 20200515
 # ------------------------------
@@ -66,6 +66,7 @@ proc setTimer {type} {
     set nxt [expr {$sec + 60 * $minutes}]
     set nexttime [split [clock format $nxt -format {%M %H %d %m %Y}]]
     set mo [lindex $nexttime 3]
+    scan $mo %d mo
     set mo [format {%02d} [expr {$mo - 1}]]
     set nexttime [join [lreplace $nexttime 3 3 $mo]]
     bind time -|- $nexttime ::Reddit::tick
@@ -144,7 +145,7 @@ bind evnt - init-server ::Reddit::setTimer
 # commands
 bind dcc m|- reddit ::Reddit::dccCommand
 
-putlog {Loaded Reddit.tcl v0.1.0 by Nikopol}
+putlog {Loaded Reddit.tcl v0.1.1 by Nikopol}
 
 } ;# end namespace
 
