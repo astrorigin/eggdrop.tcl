@@ -1,0 +1,8 @@
+# Netscape HTTP Cookie File
+
+consent.youtube.com	FALSE	/	TRUE	1622995801	OTZ	5968330_48_52_123900_48_436380
+.youtube.com	TRUE	/	TRUE	2146723199	CONSENT	YES+cb.20210504-12-p0.fr+FX+132
+.youtube.com	TRUE	/	TRUE	1620405606	GPS	1
+.youtube.com	TRUE	/	TRUE	0	YSC	-9RcEfBpqEI
+.youtube.com	TRUE	/	TRUE	1635955806	VISITOR_INFO1_LIVE	4OCY3g5JNbw
+.youtube.com	TRUE	/	TRUE	1683475808	PREF	tz=Europe.Zurich

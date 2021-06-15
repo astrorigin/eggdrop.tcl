@@ -1,6 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+# CONFIG
+
+# cookies file path
+# some websites may require a few cookies (hello youtube!)
+cookiepath = 'myscripts/urltitle-cookies.txt'
+
+# dont modify below
+
 import os.path
 import sys
 import tempfile
@@ -16,7 +24,8 @@ fd, fpath = tempfile.mkstemp(suffix='.urltitle')
 if not os.path.exists(fpath):
     print('error: cant create temp file')
     sys.exit(1)
-wget = ['wget', '--timeout=3', '--tries=1', '-qO', fpath, url]
+wget = ['wget', '--load-cookies=%s' % cookiepath,
+        '--timeout=3', '--tries=1', '-qO', fpath, url]
 try:
     sub = subprocess.run(wget, check=True)
 except subprocess.CalledProcessError:

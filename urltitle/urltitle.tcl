@@ -1,10 +1,11 @@
-# urltitle.tcl v0.2.4
+# urltitle.tcl v0.2.5
 # by Nikopol
 # inspired from teel
 # created 20200526
 #
-# no channel flags, all the config stands here in script
+# no channel flags, main config stands here in script.
 # use wget and python, so less memory, more flexible, same job.
+# the python script has its own configuration part.
 #
 # requires packages: wget python3-bs4 python3-lxml
 #
@@ -14,7 +15,7 @@ namespace eval ::UrlTitle {
 ### CONFIGURATION
 
 # list of channels to survey
-variable chans {#astrology ##astrology #astrobot #shell.blue}
+variable chans {#astrology ##astrology #astrobot}
 
 # user flags script will ignore input from
 variable ignore {bdkqr|dkqr}
@@ -24,6 +25,7 @@ variable delay 1
 
 # url patterns to ignore (websites, file extensions..)
 variable urlignore [list \
+    #{://twitter\.com} \
     #{://www\.youtube\.com} \
     #{://youtu\.be} \
     #{\.7z$} \
@@ -140,7 +142,7 @@ foreach chann $chans {
     bind pubm -|- "$chann *://*" ::UrlTitle::handler
 }
 
-putlog {Loaded UrlTitle v0.2.4 by Nikopol.}
+putlog {Loaded UrlTitle v0.2.5 by Nikopol.}
 
 } ;# end namespace
 
